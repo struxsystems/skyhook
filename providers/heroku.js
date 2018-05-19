@@ -9,14 +9,29 @@ class Heroku extends BaseProvider {
     }
 
     async parseData() {
-        this.payload.setEmbedColor(0xC9C3E6);
-        this.payload.addEmbed({
-            title: "Deployed App " + this.body.app,
-            url: this.body.url,
-            author: {
-                name: this.body.user
+        var release =  this.body.action
+
+        if (release === 'update') {
+            var embed = {
+                title: "Deployed App " + this.body.data.app.name,
+                url: this.body.output_stream_url,
+                fields: [{release: this.body.release.version}],
+                author: {
+                    name: this.body.user.email
+                }
             }
-        });
+        } else {
+            var embed = {
+                title: "Deploying App " + this.body.data.app.name,
+                url: this.body.output_stream_url,
+                author: {
+                    name: this.body.user.email
+                }
+            }
+        }
+
+        this.payload.setEmbedColor(0xC9C3E6);
+        this.payload.addEmbed(embed);
     }
 }
 
